@@ -1,4 +1,4 @@
-import { DevApiSDK } from "@/core/app/devapi-sdk";
+import { SDK } from "@/core/app/sdk";
 import { MeliServices } from "./services/meli-services";
 import {
   AzureDataTableIntegration,
@@ -11,7 +11,7 @@ import {
 
 process.env.RUNNER = true;
 
-DevApiSDK.bootstrap();
+SDK.bootstrap();
 
 const meliServices = new MeliServices();
 
@@ -25,9 +25,9 @@ const azureDataTableServices = new AzureDataTableIntegration({
 const UNLOCK = false;
 
 const handler = async () => {
-  if (UNLOCK) await DevApiSDK.paginate(processMercadoLivreOrders);
+  if (UNLOCK) await SDK.paginate(processMercadoLivreOrders);
 
-  // await DevApiSDK.paginate(processLojaIntegradaOrders, 1, 50);
+  // await SDK.paginate(processLojaIntegradaOrders, 1, 50);
   if (UNLOCK) await sendLojaIntegradaOrdersPaginationToQueue();
   await processLojaIntegradaOrdersFromQueue();
 };
@@ -39,13 +39,13 @@ const processMercadoLivreOrders = async (page: number, limit: number) => {
     });
 
   if (!maybeAuthenticated?.rowKey) {
-    DevApiSDK.logger.error({
+    SDK.logger.error({
       message: `No refresh token found`,
       context: "FETCH_ORDERS",
       data: maybeAuthenticated,
     });
 
-    return DevApiSDK.STOP_PAGINATE;
+    return SDK.STOP_PAGINATE;
   }
 
   const {
@@ -69,12 +69,12 @@ const processMercadoLivreOrders = async (page: number, limit: number) => {
   if (maybeOrders.isLeft()) {
     const ordersError = maybeOrders.getLeft();
 
-    DevApiSDK.logger.error({
+    SDK.logger.error({
       message: `Error fetching orders ${ordersError.message}`,
       context: "FETCH_ORDERS",
     });
 
-    return DevApiSDK.KEEP_PAGINATE;
+    return SDK.KEEP_PAGINATE;
   }
 
   const { order_items: orders } = maybeOrders.getRight().data;
@@ -83,7 +83,7 @@ const processMercadoLivreOrders = async (page: number, limit: number) => {
     console.log(order.item.id);
   }
 
-  return DevApiSDK.KEEP_PAGINATE;
+  return SDK.KEEP_PAGINATE;
 };
 
 handler();

@@ -10,7 +10,7 @@ import { RedisCacheImpl } from "@/shell/implementation/redis-cache.impl";
 import { QueueProtocol } from "../protocols/queue.protocol";
 import { RedisQueueImpl } from "@/shell/implementation/redis-queue.impl";
 
-export class DevApiSDK {
+export class SDK {
   private static _api: ApiProtocol;
   private static _logger: LoggerProtocol;
   private static _formatDate: FormatDateProtocol;
@@ -26,50 +26,47 @@ export class DevApiSDK {
   } as const;
 
   static bootstrap() {
-    return new DevApiSDK();
+    return new SDK();
   }
 
   static get api() {
-    if (!DevApiSDK._api) {
-      DevApiSDK._api = new ConsumePlanApiDecorator(
-        new AxiosApiImpl(),
-        DevApiSDK.logger
-      );
+    if (!SDK._api) {
+      SDK._api = new ConsumePlanApiDecorator(new AxiosApiImpl(), SDK.logger);
     }
 
-    return DevApiSDK._api;
+    return SDK._api;
   }
 
   static get logger() {
-    if (!DevApiSDK._logger) {
-      DevApiSDK._logger = new PinoLoggerImpl();
+    if (!SDK._logger) {
+      SDK._logger = new PinoLoggerImpl();
     }
 
-    return DevApiSDK._logger;
+    return SDK._logger;
   }
 
   static get formatDate() {
-    if (!DevApiSDK._formatDate) {
-      DevApiSDK._formatDate = dayJsFormatDate;
+    if (!SDK._formatDate) {
+      SDK._formatDate = dayJsFormatDate;
     }
 
-    return DevApiSDK._formatDate;
+    return SDK._formatDate;
   }
 
   static get cache() {
-    if (!DevApiSDK._cache) {
-      DevApiSDK._cache = new RedisCacheImpl();
+    if (!SDK._cache) {
+      SDK._cache = new RedisCacheImpl();
     }
 
-    return DevApiSDK._cache;
+    return SDK._cache;
   }
 
   static get queue() {
-    if (!DevApiSDK._queue) {
-      DevApiSDK._queue = new RedisQueueImpl();
+    if (!SDK._queue) {
+      SDK._queue = new RedisQueueImpl();
     }
 
-    return DevApiSDK._queue;
+    return SDK._queue;
   }
 
   static async paginate(

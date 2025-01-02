@@ -1,5 +1,4 @@
 import { meliSchema } from "@/main/schema";
-import { Response } from "../protocols/api.protocol";
 import { Either } from "../domain/either";
 
 type Credentials = {
@@ -41,19 +40,16 @@ export abstract class MercadoLivreIntegration {
 
     const response = await meliSchema.AUTHENTICATION.refreshToken({
       grant_type: "refresh_token",
-      ...this._credentials,
+      client_id: this._credentials.client_id,
+      client_secret: this._credentials.client_secret,
+      refresh_token: this._credentials.refresh_token || "",
     });
 
     if (response.isLeft()) {
       return response;
     }
 
-    type RefreshToken = Response<{
-      access_token: string;
-      refresh_token: string;
-    }>;
-
-    const { data } = response.getRight<RefreshToken>();
+    const { data } = response.getRight();
 
     this._authorization = `Bearer ${data.access_token}`;
 

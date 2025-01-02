@@ -1,4 +1,4 @@
-import { DevApiSDK } from "@/core/app/devapi-sdk";
+import { SDK } from "@/core/app/sdk";
 import {
   OrderBillingType,
   OrderPackType,
@@ -21,7 +21,7 @@ export const meliSchema = {
       client_secret: string;
       refresh_token: string;
     }) => {
-      return DevApiSDK.api.post<RefreshTokenType>({
+      return SDK.api.post<RefreshTokenType>({
         url: "https://api.mercadolibre.com/oauth/token",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -43,7 +43,7 @@ export const meliSchema = {
       authorization: string;
       params: Record<string, unknown>;
     }) => {
-      return DevApiSDK.api.get<OrdersSearchType>({
+      return SDK.api.get<OrdersSearchType>({
         url: "https://api.mercadolibre.com/orders/search",
         headers: {
           Authorization: authorization,
@@ -60,7 +60,7 @@ export const meliSchema = {
       id: string;
       authorization: string;
     }) => {
-      return DevApiSDK.api.get<OrderBillingType>({
+      return SDK.api.get<OrderBillingType>({
         url: `https://api.mercadolibre.com/orders/${id}/billing_info`,
         headers: {
           Authorization: authorization,
@@ -75,7 +75,7 @@ export const meliSchema = {
       id: string;
       authorization: string;
     }) => {
-      return DevApiSDK.api.get<OrdersSearchType>({
+      return SDK.api.get<OrdersSearchType>({
         url: `https://api.mercadolibre.com/orders/${id}`,
         headers: {
           Authorization: authorization,
@@ -91,7 +91,7 @@ export const meliSchema = {
       id: string;
       authorization: string;
     }) => {
-      return DevApiSDK.api.get<OrderPackType>({
+      return SDK.api.get<OrderPackType>({
         url: `https://api.mercadolibre.com/packs/${id}`,
         headers: {
           Authorization: authorization,
@@ -109,7 +109,7 @@ export const meliSchema = {
       authorization: string;
       id: string;
     }) => {
-      return DevApiSDK.api.get<UsersType>({
+      return SDK.api.get<UsersType>({
         url: `https://api.mercadolibre.com/users/${id}`,
         headers: {
           Authorization: authorization,
@@ -127,7 +127,7 @@ export const meliSchema = {
       shippingId: string;
       authorization: string;
     }) => {
-      return DevApiSDK.api.get<ShipmentsType>({
+      return SDK.api.get<ShipmentsType>({
         url: `https://api.mercadolibre.com/shipments/${shippingId}`,
         headers: {
           Authorization: authorization,
@@ -150,7 +150,21 @@ export const lojaIntegradaSchema = {
       chave_api: string;
       params: Record<string, unknown>;
     }) => {
-      return DevApiSDK.api.get({
+      type FindOrdersByPeriod = {
+        objects: {
+          id: string;
+        }[];
+        meta: {
+          total: number;
+          limit: number;
+          offset: number;
+          previous: string;
+          next: string;
+          total_count: number;
+        };
+      };
+
+      return SDK.api.get<FindOrdersByPeriod>({
         url: `https://api.awsli.com.br/v1/pedido/search`,
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +187,7 @@ export const lojaIntegradaSchema = {
       chave_api: string;
       id: string;
     }) => {
-      return DevApiSDK.api.get({
+      return SDK.api.get({
         url: `https://api.awsli.com.br/v1/pedido/${id}`,
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +209,7 @@ export const lojaIntegradaSchema = {
       chave_api: string;
       id: string;
     }) => {
-      return DevApiSDK.api.get({
+      return SDK.api.get({
         url: `https://api.awsli.com.br/v1/situacao/pedido/${id}`,
         headers: {
           "Content-Type": "application/json",
